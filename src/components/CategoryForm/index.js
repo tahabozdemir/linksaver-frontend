@@ -7,7 +7,7 @@ const validationSchema = Yup.object({
   category: Yup.string().
     required('Required a Category Title')
     .min(2, 'Category Title must be at least 2 characters')
-    .max(15, 'ategory Title must be at most 15 characters'),
+    .max(15, 'Category Title must be at most 15 characters'),
 });
 
 const CategoryForm = ({ onSubmit, onClose }) => (
