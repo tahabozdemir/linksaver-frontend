@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { api } from './api'
+import { api } from './api';
 import { Container, Grid, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import AvatarHeader from './components/AvatarHeader';
 import NavBar from './components/NavBar';
 import StatsCard from './components/StatsCard';
-import CategoryBoard from './components/CategoryBoard'
-
+import CategoryBoard from './components/CategoryBoard';
+import Signup from './components/SignupForm';
+import Signin from './components/SigninForm';
+import './config/amplify-config'
 
 function App() {
   const [categories, setCategories] = useState([]);
@@ -38,6 +41,14 @@ function App() {
 
   return (
     <Container>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/'>
+            <Route path='signup' element={<Signup />} />
+            <Route path='signin' element={<Signin />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
       <Grid container spacing={2} alignItems="center">
         <AvatarHeader />
         <NavBar />
