@@ -4,19 +4,34 @@ import HomeIcon from '@mui/icons-material/Home';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import './assets/style.css'
+import { signOut } from 'aws-amplify/auth';
+import { useNavigate } from 'react-router-dom';
 
-const NavBar = () => (
-  <Grid item xs={12} sm={6} md={8} container justifyContent="flex-end" spacing={1}>
-    <Grid item>
-      <Button startIcon={<HomeIcon />} variant="outlined" color='primary' className='Button'>Home</Button>
+const NavBar = () => {
+  const navigate = useNavigate();
+  const handleSignout = async () => {
+    try {
+      await signOut();
+      navigate('/signin');
+      alert('Success Sign out');
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+
+  return (
+    <Grid item xs={12} sm={6} md={8} container justifyContent="flex-end" spacing={1}>
+      <Grid item>
+        <Button startIcon={<HomeIcon />} variant="outlined" color='primary' className='Button'>Home</Button>
+      </Grid>
+      <Grid item>
+        <Button startIcon={<SettingsIcon />} variant="outlined" className='Button'>Settings</Button>
+      </Grid>
+      <Grid item>
+        <Button startIcon={<ExitToAppIcon />} onClick={handleSignout} variant="outlined">Sign Out</Button>
+      </Grid>
     </Grid>
-    <Grid item>
-      <Button startIcon={<SettingsIcon />} variant="outlined" className='Button'>Settings</Button>
-    </Grid>
-    <Grid item>
-      <Button startIcon={<ExitToAppIcon />} variant="outlined">Signout</Button>
-    </Grid>
-  </Grid>
-);
+  )
+};
 
 export default NavBar;
