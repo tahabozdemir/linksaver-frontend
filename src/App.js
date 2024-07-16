@@ -3,9 +3,10 @@ import './App.css';
 import { Container } from '@mui/material';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Signup from './components/SignupForm';
-import Signin from './components/SigninForm';
-import Home from './components/home';
+import Signup from './components/Auth/SignupForm';
+import Signin from './components/Auth/SigninForm';
+import HomePage from './pages/HomePage';
+import LinkPage from './pages/LinkPage'
 import './config/amplify-config'
 
 function App() {
@@ -14,9 +15,10 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/'>
-            <Route path='/' element={<Home />} />
-            <Route path='signup' element={<Signup />} />
-            <Route path='signin' element={<Signin />} />
+            <Route path='/' element={<HomePage />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/signin' element={<Signin />} />
+            <Route path='/links' element={<LinkPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

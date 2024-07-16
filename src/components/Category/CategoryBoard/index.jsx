@@ -2,16 +2,18 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import CategoryCard from '../CategoryCard';
 import CategoryModal from '../CategoryModal';
-import api from '../../api'
+import api from '../../../api'
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategories }) => {
-    const { token } = useSelector(store => store.token)
+    const { userId } = useSelector(store => store.user);
+    const navigate = useNavigate();
 
     const handleAddCategory = (values) => {
         api
             .post('/category', {
-                userId: token.payload.sub,
+                userId: userId,
                 title: values.category,
                 emoji: 'home'
             })
@@ -24,16 +26,14 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
     };
 
     const handleDeleteCategory = (id) => {
-        api.delete(`/category/${id}`, {
-            data: { userId: token.payload.username },
-        })
+        api.delete(`/category/${id}?userId=${userId}`)
             .then(() => {
                 fetchCategories();
             })
     };
 
     const handleEditCategory = (id, newTitle) => {
-        api.patch(`/category/${id}?userId=${token.payload.username}`, {
+        api.patch(`/category/${id}?userId=${userId}`, {
             title: newTitle,
             emoji: "home"
         })
@@ -41,6 +41,10 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
                 fetchCategories();
             })
     };
+
+    const handleNavigateLinks = (id, title) => {
+        navigate('/links', { state: { categoryId: `${id}`, categoryTitle: title } });
+    }
 
     return (<>
         <Grid container spacing={2}>
@@ -52,6 +56,7 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
                         count={category.count}
                         onDelete={() => handleDeleteCategory(category.id)}
                         onEdit={(newTitle) => handleEditCategory(category.id, newTitle)}
+                        onNavigateLinks={() => handleNavigateLinks(category.id, category.title)}
                     />
                 </Grid>
             ))}

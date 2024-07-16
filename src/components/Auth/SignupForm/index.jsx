@@ -4,6 +4,7 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { signUp } from "aws-amplify/auth";
 import SignupVerification from '../SignupVerification';
+import '../../../config/amplify-config'
 
 
 const SignupForm = ({ onSubmit }) => {

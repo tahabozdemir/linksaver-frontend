@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { fetchAuthSession } from 'aws-amplify/auth';
 const initialState = {
-    token: ''
+    accessToken: '',
+    userId: ''
 }
 
 export const fetchToken = createAsyncThunk('token/fetchStatus',
@@ -12,15 +13,16 @@ export const fetchToken = createAsyncThunk('token/fetchStatus',
     }
 )
 
-export const tokenSlice = createSlice({
-    name: 'token',
+export const userSlice = createSlice({
+    name: 'user',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchToken.fulfilled, (state, action) => {
-            state.token = action.payload;
+            state.accessToken = action.payload;
+            state.userId = action.payload.payload.username; // maybe be sub
         })
     }
 })
 
-export default tokenSlice.reducer;
+export default userSlice.reducer;

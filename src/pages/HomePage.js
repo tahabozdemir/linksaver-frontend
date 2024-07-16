@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchToken } from '../redux/tokenSlice.js';
+import { fetchToken } from '../redux/userSlice.js';
 import api from '../api.js';
 
 import { Grid, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import AvatarHeader from './AvatarHeader/index.js';
-import NavBar from './NavBar/index.js';
-import StatsCard from './StatsCard/index.js';
-import CategoryBoard from './CategoryBoard/index.js';
+import AvatarHeader from '../components/Layout/AvatarHeader/index.jsx';
+import NavBar from '../components/Layout/NavBar';
+import StatsCard from '../components/Layout/StatsCard/index.jsx';
+import CategoryBoard from '../components/Category/CategoryBoard';
 
 const Home = () => {
     const dispatch = useDispatch();
-    const { token } = useSelector(store => store.token);
-
+    const { userId } = useSelector(store => store.user);
     const [categories, setCategories] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -23,19 +22,17 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        if (token) {
+        if (userId) {
             fetchCategories();
         }
-    }, [token]);
+    }, [userId]);
 
     const fetchCategories = async () => {
-        const userId = token.payload.username;
         await api.get(`/category?userId=${userId}`)
             .then((response) => {
                 setCategories(response.data.data);
             })
     };
-
 
     const handleOpenModal = () => {
         setModalOpen(true);
