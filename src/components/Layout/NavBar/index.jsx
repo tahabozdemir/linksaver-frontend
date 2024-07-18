@@ -6,6 +6,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import './assets/style.css'
 import { signOut } from 'aws-amplify/auth';
 import { useNavigate } from 'react-router-dom';
+import { purple, red } from '@mui/material/colors';
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -19,16 +20,17 @@ const NavBar = () => {
     }
   };
 
+  const handleNavigateHomePage = () => {
+    navigate('/')
+  }
+
   return (
     <Grid item xs={12} sm={6} md={8} container justifyContent="flex-end" spacing={1}>
       <Grid item>
-        <Button startIcon={<HomeIcon />} variant="outlined" color='primary' className='Button'>Home</Button>
+        <Button startIcon={<HomeIcon />} onClick={handleNavigateHomePage} sx={{ color: 'black' }}>Home</Button>
       </Grid>
       <Grid item>
-        <Button startIcon={<SettingsIcon />} variant="outlined" className='Button'>Settings</Button>
-      </Grid>
-      <Grid item>
-        <Button startIcon={<ExitToAppIcon />} onClick={handleSignout} variant="outlined">Sign Out</Button>
+        <Button startIcon={<ExitToAppIcon />} onClick={handleSignout} sx={{ color: 'black' }}>Sign Out</Button>
       </Grid>
     </Grid>
   )

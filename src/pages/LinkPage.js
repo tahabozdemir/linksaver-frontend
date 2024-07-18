@@ -40,7 +40,7 @@ const LinkPage = () => {
     }, [userId, categoryId]);
 
     const fetchLinks = async () => {
-        await api.get(`/links?categoryId=${categoryId}`)
+        await api.get(`/categories/${categoryId}/links`)
             .then((response) => {
                 setLinks(response.data.data);
             });

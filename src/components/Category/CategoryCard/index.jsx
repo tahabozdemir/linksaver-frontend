@@ -65,7 +65,7 @@ const CategoryCard = ({ iconType, title, count, onDelete, onEdit, onNavigateLink
             <Typography variant="h6">{count}</Typography>
           </Container>
           {!isEditing && <IconButton onClick={handleEditClick}><CreateIcon /></IconButton>}
-          <IconButton><PlayArrowIcon onClick={onNavigateLinks} /></IconButton>
+          <IconButton onClick={onNavigateLinks}><PlayArrowIcon /></IconButton>
           <IconButton><ShareIcon /></IconButton>
           <IconButton onClick={onDelete}><DeleteIcon /></IconButton>
         </CardContent>

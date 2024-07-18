@@ -6,16 +6,18 @@ import { useSelector } from 'react-redux';
 import LinkModal from '../LinkModal';
 
 const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks }) => {
+    const { userId } = useSelector(store => store.user);
     const handleAddLink = (values) => {
         api
             .post('/links', {
+                userId: userId,
                 categoryId: categoryId,
                 title: values.linkTitle,
                 url: values.linkUrl,
                 isFavorite: false,
-                isDelete: false
             })
             .then(() => {
+                console.log(categoryId)
                 fetchLinks();
             })
             .finally(() => {
@@ -23,7 +25,7 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
             });
     };
     const handleDeleteLink = (id) => {
-        api.delete(`/links/${id}?categoryId=${categoryId}`)
+        api.delete(`/links/${id}?userId=${userId}`)
             .then(() => {
                 fetchLinks();
             })
@@ -32,12 +34,20 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
     const handleEditLink = (id, newTitle, newUrl) => {
         api.patch(`/links/${id}`, {
             title: newTitle,
-            url: newUrl
+            url: newUrl,
+            userId: userId
         })
             .then(() => {
                 fetchLinks();
             })
     };
+
+    const handleFavorite = (id, isFavorite) => {
+        api.patch(`links/${id}`, {
+            isFavorite: isFavorite,
+            userId: userId
+        })
+    }
 
     return (
         <div>
@@ -47,8 +57,10 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
                         <LinkCard
                             title={link.title}
                             url={link.url}
+                            isFavorite={link.isFavorite}
                             onDelete={() => handleDeleteLink(link.id)}
                             onEdit={(newTitle, newUrl) => handleEditLink(link.id, newTitle, newUrl)}
+                            onFavorite={(isFavorite) => handleFavorite(link.id, isFavorite)}
                         />
                     </Grid>
                 ))}

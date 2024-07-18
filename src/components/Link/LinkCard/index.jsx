@@ -6,12 +6,13 @@ import CreateIcon from '@mui/icons-material/Create';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { grey } from '@mui/material/colors';
+import { grey, red } from '@mui/material/colors';
 
-const LinkCard = ({ title, url, onDelete, onEdit }) => {
+const LinkCard = ({ title, url, isFavorite, onDelete, onEdit, onFavorite }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newTitle, setNewTitle] = useState(title);
     const [newUrl, setNewUrl] = useState(url)
+    const [newFavorite, setFavorited] = useState(isFavorite);
     const inputRef = useRef(null);
 
     const handleEditClick = () => {
@@ -30,6 +31,12 @@ const LinkCard = ({ title, url, onDelete, onEdit }) => {
         setNewUrl(url);
         setIsEditing(false);
     };
+
+    const handleFavorite = () => {
+        const updatedFavorite = !newFavorite;
+        setFavorited(updatedFavorite);
+        onFavorite(updatedFavorite);
+    }
 
     return (
         <>
@@ -82,7 +89,7 @@ const LinkCard = ({ title, url, onDelete, onEdit }) => {
 
                     </Container>
                     {!isEditing && <IconButton onClick={handleEditClick}><CreateIcon /></IconButton>}
-                    <IconButton><FavoriteIcon /></IconButton>
+                    <IconButton onClick={handleFavorite}><FavoriteIcon sx={{ color: newFavorite ? red[500] : 'gray' }} /></IconButton>
                     <IconButton><ShareIcon /></IconButton>
                     <IconButton onClick={onDelete}><DeleteIcon /></IconButton>
                 </CardContent>

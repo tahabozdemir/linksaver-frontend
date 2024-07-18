@@ -12,7 +12,7 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
 
     const handleAddCategory = (values) => {
         api
-            .post('/category', {
+            .post('/categories', {
                 userId: userId,
                 title: values.category,
                 emoji: 'home'
@@ -26,14 +26,14 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
     };
 
     const handleDeleteCategory = (id) => {
-        api.delete(`/category/${id}?userId=${userId}`)
+        api.delete(`/categories/${id}?userId=${userId}`)
             .then(() => {
                 fetchCategories();
             })
     };
 
     const handleEditCategory = (id, newTitle) => {
-        api.patch(`/category/${id}?userId=${userId}`, {
+        api.patch(`/categories/${id}?userId=${userId}`, {
             title: newTitle,
             emoji: "home"
         })
