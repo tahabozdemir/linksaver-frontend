@@ -63,19 +63,19 @@ const Home = () => {
                 <AvatarHeader />
                 <NavBar />
             </Grid>
-            <Grid container spacing={2} mt={4}>
-                <Grid item xs={12} sm={6} md={3}>
+            <Grid container justifyContent="center" spacing={2} mt={4}>
+                <Grid item xs={12} sm={6} md={6}>
                     <a href='/links/all' className='statsCard'>
                         <StatsCard iconType="link" title="All Links" count={countAllLinks} className="statsCard" />
                     </a>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={6} md={6}>
                     <a href='/links/favorites' style={{ textDecoration: 'none' }} >
-                        <StatsCard iconType="favorite" title="Favorites" count={countFavorites} />
+                        <StatsCard iconType="favorite" title="Favorite Links" count={countFavorites} />
                     </a>
                 </Grid>
             </Grid>
-            <Typography variant="h5" mt={4} mb={2}>
+            <Typography variant="h4" mt={4} mb={2}>
                 Categories <IconButton onClick={handleOpenModal}><AddIcon /></IconButton>
             </Typography>
             <CategoryBoard

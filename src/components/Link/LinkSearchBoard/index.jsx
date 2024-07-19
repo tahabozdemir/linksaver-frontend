@@ -1,14 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, TextField } from '@mui/material';
-import api from '../../../api'
+import { Grid, TextField, Typography, Container } from '@mui/material';
+import api from '../../../api';
 import LinkCard from '../LinkCard';
-import { useSelector } from 'react-redux';
-import LinkFavoriteCard from '../LinkFavoriteCard'
+import { fetchToken } from '../../../redux/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import LinkFavoriteCard from '../LinkFavoriteCard';
 
-const LinkSearchBoard = ({ showFavoritesCard, fetchLinks, links, title }) => {
+
+
+const LinkSearchBoard = ({ showFavoritesCard, title, Icon }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const { userId } = useSelector(store => store.user);
     const [filteredLinks, setFilteredLinks] = useState([]);
+    const [links, setLinks] = useState([]);
+    const dispatch = useDispatch();
+
+
+    const fetchLinks = async () => {
+        if (showFavoritesCard) {
+            await api.get(`/users/${userId}/favorites`)
+                .then((response) => {
+                    setFilteredLinks(response.data.data)
+                });
+        } else {
+            await api.get(`/users/${userId}/links`)
+                .then((response) => {
+                    setFilteredLinks(response.data.data);
+                });
+        };
+    }
+
+    useEffect(() => {
+        dispatch(fetchToken());
+    }, []);
+
+    useEffect(() => {
+        if (userId) {
+            fetchLinks();
+        }
+    }, [userId]);
+
 
     const handleDeleteLink = (id) => {
         api.delete(`/links/${id}?userId=${userId}`)
@@ -34,12 +65,14 @@ const LinkSearchBoard = ({ showFavoritesCard, fetchLinks, links, title }) => {
             isFavorite: isFavorite
         })
     }
+
     const handleSearchLinks = (title) => {
         api.get(`/users/${userId}/links/search?title=${title}`)
             .then((response) => {
                 setFilteredLinks(response.data.data)
             })
     }
+
     const handleSearchFavoriteLinks = (title) => {
         api.get(`/users/${userId}/favorites/search?title=${title}`)
             .then((response) => {
@@ -48,7 +81,7 @@ const LinkSearchBoard = ({ showFavoritesCard, fetchLinks, links, title }) => {
     }
 
     useEffect(() => {
-        if (searchTerm) {
+        if (searchTerm && userId) {
             const timeoutMs = 500;
             if (showFavoritesCard) {
                 const handleSearch = setTimeout(() => {
@@ -62,7 +95,9 @@ const LinkSearchBoard = ({ showFavoritesCard, fetchLinks, links, title }) => {
                 return () => clearTimeout(handleSearch);
             }
         } else {
-            setFilteredLinks(links);
+            if (userId) {
+                fetchLinks();
+            }
         }
     }, [searchTerm, showFavoritesCard, links]);
 
@@ -100,7 +135,12 @@ const LinkSearchBoard = ({ showFavoritesCard, fetchLinks, links, title }) => {
     }
     return (
         <div>
-            <h3>{title}</h3>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '3rem', marginBottom: '1rem' }}>
+                <Icon style={{ marginRight: '1rem' }} fontSize="large" />
+                <Typography variant="h4">
+                    {title}
+                </Typography>
+            </div>
             <TextField
                 fullWidth
                 label="Search links by title"
@@ -109,11 +149,10 @@ const LinkSearchBoard = ({ showFavoritesCard, fetchLinks, links, title }) => {
                 onChange={(e) => {
                     setSearchTerm(e.target.value)
                 }}
-                margin="normal"
+                sx={{ marginBottom: '1.5rem' }}
             />
             <Card />
         </div>
     );
 };
-
 export default LinkSearchBoard;

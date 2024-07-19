@@ -60,7 +60,7 @@ const LinkPage = () => {
                 <AvatarHeader />
                 <NavBar />
             </Grid>
-            <Typography variant="h5" mt={4} mb={2}>
+            <Typography variant="h4" mt={4} mb={2}>
                 {categoryTitle}
                 <IconButton onClick={handleOpenModal}><AddIcon /></IconButton>
             </Typography>
