@@ -1,77 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './App.css';
-import { api } from './api'
-import { Container, Grid, Typography, IconButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { Container } from '@mui/material';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import AvatarHeader from './components/AvatarHeader';
-import NavBar from './components/NavBar';
-import StatsCard from './components/StatsCard';
-import CategoryBoard from './components/CategoryBoard';
-import Signup from './components/SignupForm';
-import Signin from './components/SigninForm';
+import Signup from './components/Auth/SignupForm';
+import Signin from './components/Auth/SigninForm';
+import HomePage from './pages/HomePage';
+import LinkPage from './pages/LinkPage';
+import AllLinkPage from './pages/AllLinksPage';
+import FavoritesLinkPage from './pages/FavoritesLinkPage';
 import './config/amplify-config'
 
 function App() {
-  const [categories, setCategories] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const fetchCategories = () => {
-    api().get('/category/all')
-      .then((response) => {
-        setCategories(response.data.data);
-      })
-      .catch((error) => {
-        alert(`Error: ${error.response.data.error.message}`);
-      });
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
-
   return (
     <Container>
       <BrowserRouter>
         <Routes>
           <Route path='/'>
-            <Route path='signup' element={<Signup />} />
-            <Route path='signin' element={<Signin />} />
+            <Route path='/' element={<HomePage />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/signin' element={<Signin />} />
+            <Route path='/links' element={<LinkPage />} />
+            <Route path='/links/all' element={<AllLinkPage />} />
+            <Route path='/links/favorites' element={<FavoritesLinkPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
-      <Grid container spacing={2} alignItems="center">
-        <AvatarHeader />
-        <NavBar />
-      </Grid>
-      <Grid container spacing={2} mt={4}>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatsCard iconType="link" title="All Links" count={11} />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatsCard iconType="favorite" title="Favorites" count={5} />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatsCard iconType="delete" title="Deleted" count={3} />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatsCard iconType="category" title="All Categories" count={categories.length} />
-        </Grid>
-      </Grid>
-      <Typography variant="h5" mt={4} mb={2}>
-        Categories <IconButton onClick={handleOpenModal}><AddIcon /></IconButton>
-      </Typography>
-      <CategoryBoard modalOpen={modalOpen} handleCloseModal={handleCloseModal} categories={categories} fetchCategories={fetchCategories}
-      ></CategoryBoard>
     </Container>
   );
 }

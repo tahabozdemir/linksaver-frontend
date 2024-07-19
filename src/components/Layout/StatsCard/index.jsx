@@ -16,8 +16,10 @@ const StatsCard = ({ iconType, title, count }) => (
   <Card>
     <CardContent>
       {iconMapping[iconType]}
-      <Typography variant="h6">{title}</Typography>
-      <Typography variant="h4">{count}</Typography>
+      <div style={{ height: '10vh', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <Typography variant="h6">{title}</Typography>
+        <Typography variant="h4">{count}</Typography>
+      </div>
     </CardContent>
   </Card>
 );

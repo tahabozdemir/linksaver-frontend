@@ -1,0 +1,9 @@
+.statsCard {
+    border: 1px;
+    text-decoration: none;
+}
+
+.statsCard:hover {
+    border: 10px;
+    background-color: aqua;
+}

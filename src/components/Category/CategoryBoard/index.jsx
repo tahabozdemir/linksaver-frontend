@@ -2,20 +2,23 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import CategoryCard from '../CategoryCard';
 import CategoryModal from '../CategoryModal';
-import { api } from '../../api'
+import api from '../../../api'
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategories }) => {
+    const { userId } = useSelector(store => store.user);
+    const navigate = useNavigate();
+
     const handleAddCategory = (values) => {
-        api()
-            .post('/category', {
+        api
+            .post('/categories', {
+                userId: userId,
                 title: values.category,
                 emoji: 'home'
             })
             .then(() => {
                 fetchCategories();
-            })
-            .catch((error) => {
-                alert(`Error: ${error.response.data.error.message}`)
             })
             .finally(() => {
                 handleCloseModal();
@@ -23,27 +26,25 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
     };
 
     const handleDeleteCategory = (id) => {
-        api().delete(`/category/${id}`)
+        api.delete(`/categories/${id}?userId=${userId}`)
             .then(() => {
                 fetchCategories();
             })
-            .catch((error) => {
-                alert(`Error: ${error.response.data.error.message}`)
-            });
     };
 
     const handleEditCategory = (id, newTitle) => {
-        api().patch(`/category/${id}`, {
+        api.patch(`/categories/${id}?userId=${userId}`, {
             title: newTitle,
             emoji: "home"
         })
             .then(() => {
                 fetchCategories();
             })
-            .catch((error) => {
-                alert(`Error: ${error.response.data.error.message}`)
-            });;
     };
+
+    const handleNavigateLinks = (id, title) => {
+        navigate('/links', { state: { categoryId: `${id}`, categoryTitle: title } });
+    }
 
     return (<>
         <Grid container spacing={2}>
@@ -55,6 +56,7 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
                         count={category.count}
                         onDelete={() => handleDeleteCategory(category.id)}
                         onEdit={(newTitle) => handleEditCategory(category.id, newTitle)}
+                        onNavigateLinks={() => handleNavigateLinks(category.id, category.title)}
                     />
                 </Grid>
             ))}

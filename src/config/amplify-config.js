@@ -7,7 +7,7 @@ Amplify.configure({
             loginWith: {
                 email: true,
             },
-            signUpVerificationMethod: "code",
+            signUpVerificationMethod: "link",
             userAttributes: {
                 email: {
                     required: true,

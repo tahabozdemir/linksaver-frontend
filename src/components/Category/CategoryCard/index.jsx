@@ -9,7 +9,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@mui/icons-material/Close';
 
-const CategoryCard = ({ iconType, title, count, onDelete, onEdit }) => {
+const CategoryCard = ({ iconType, title, count, onDelete, onEdit, onNavigateLinks }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
   const inputRef = useRef(null);
@@ -47,7 +47,7 @@ const CategoryCard = ({ iconType, title, count, onDelete, onEdit }) => {
                       handleSave();
                     }
                   }}
-                  inputProps={{ maxLength: 12 }}
+                  inputProps={{ maxLength: 30 }}
                   autoFocus
                   style={{ marginRight: '10px' }}
                 />
@@ -65,7 +65,7 @@ const CategoryCard = ({ iconType, title, count, onDelete, onEdit }) => {
             <Typography variant="h6">{count}</Typography>
           </Container>
           {!isEditing && <IconButton onClick={handleEditClick}><CreateIcon /></IconButton>}
-          <IconButton><PlayArrowIcon /></IconButton>
+          <IconButton onClick={onNavigateLinks}><PlayArrowIcon /></IconButton>
           <IconButton><ShareIcon /></IconButton>
           <IconButton onClick={onDelete}><DeleteIcon /></IconButton>
         </CardContent>
