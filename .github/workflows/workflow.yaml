@@ -19,6 +19,9 @@ jobs:
         run: npm install
 
       - name: Build project
+        env:
+          LINKSAVER_USER_POOL_ID: ${{secrets.LINKSAVER_USER_POOL_ID}}
+          LINKSAVER_USER_POOL_CLIENT_ID: ${{secrets.LINKSAVER_USER_POOL_CLIENT_ID}}
         run: npm run build
 
       - name: Upload build artifacts
@@ -31,6 +34,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Get commit hash
         run: echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
 

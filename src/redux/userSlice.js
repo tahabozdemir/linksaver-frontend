@@ -20,7 +20,7 @@ export const userSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(fetchToken.fulfilled, (state, action) => {
             state.accessToken = action.payload;
-            state.userId = action.payload.payload.username; // maybe be sub
+            state.userId = action.payload.payload.username;
         })
     }
 })

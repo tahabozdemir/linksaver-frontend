@@ -14,7 +14,7 @@ import './config/amplify-config'
 function App() {
   return (
     <Container>
-      <BrowserRouter>
+      <BrowserRouter basename="/">
         <Routes>
           <Route path='/'>
             <Route path='/' element={<HomePage />} />
