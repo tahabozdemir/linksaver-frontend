@@ -29,10 +29,10 @@ function App() {
   }, [dispatch]);
 
   if (loading) {
-    return(
-    <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <CircularProgress />
-    </Container>)
+    return (
+      <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Container>)
   }
 
   return (

@@ -16,7 +16,12 @@ export const fetchToken = createAsyncThunk('token/fetchStatus',
 export const userSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {},
+    reducers: {
+        clearUser: (state) => {
+            state.accessToken = null;
+            state.userId = null;
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(fetchToken.fulfilled, (state, action) => {
             state.accessToken = action.payload;
@@ -24,5 +29,5 @@ export const userSlice = createSlice({
         })
     }
 })
-
+export const { clearUser } = userSlice.actions;
 export default userSlice.reducer;
