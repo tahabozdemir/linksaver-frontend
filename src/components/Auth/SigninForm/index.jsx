@@ -88,7 +88,8 @@ const Signin = () => {
                                     variant="contained"
                                     style={{ borderRadius: '0.7rem' }}
                                     sx={{ mt: 2, mb: 2, p: 1.5 }} type="submit">Login</Button>
-                                <Link href="/signup" underline="none">Don't you have an accout?</Link>
+
+                                <Link component="button" underline="none" onClick={() => { navigate('/signup') }}>Don't you have an accout?</Link>
                             </Form>
                         )}
                     </Formik>
