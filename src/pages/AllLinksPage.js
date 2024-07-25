@@ -13,7 +13,9 @@ const AllLinksPage = () => {
                 <AvatarHeader />
                 <NavBar />
             </Grid>
-            <LinkSearchBoard title={"All Links"} Icon={LinkIcon} />
+            <LinkSearchBoard
+                title={"All Links"}
+                Icon={LinkIcon} />
         </div>
     );
 };

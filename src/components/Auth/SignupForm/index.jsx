@@ -4,10 +4,11 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { signUp } from "aws-amplify/auth";
 import SignupVerification from '../SignupVerification';
+import { useNavigate } from 'react-router-dom';
 import '../../../config/amplify-config'
 
-
 const SignupForm = ({ onSubmit }) => {
+    const navigate = useNavigate();
     const validatePassword = (value) => {
         let error;
         if (value && !/[A-Z]/.test(value)) {
@@ -96,7 +97,8 @@ const SignupForm = ({ onSubmit }) => {
                                     variant="contained"
                                     style={{ borderRadius: '0.7rem' }}
                                     sx={{ mt: 2, mb: 2, p: 1.5 }} type="submit">Create Account</Button>
-                                <Link href="/signin" underline="none">Already have an account?</Link>
+
+                                <Link component='button' underline="none" onClick={() => { navigate('/signin') }}>Already have an account?</Link>
                             </Form>
                         )}
                     </Formik>

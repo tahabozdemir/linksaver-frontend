@@ -6,8 +6,6 @@ import { fetchToken } from '../../../redux/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import LinkFavoriteCard from '../LinkFavoriteCard';
 
-
-
 const LinkSearchBoard = ({ showFavoritesCard, title, Icon }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const { userId } = useSelector(store => store.user);

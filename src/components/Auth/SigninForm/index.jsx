@@ -4,6 +4,8 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { signIn, fetchAuthSession } from 'aws-amplify/auth';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { fetchToken } from '../../../redux/userSlice'
 import SignupVerification from '../SignupVerification';
 
 
@@ -18,6 +20,7 @@ const validationSchema = Yup.object({
 });
 
 const Signin = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [isVerificated, setVerificated] = useState(true);
     const onSubmit = async (values) => {
@@ -28,6 +31,7 @@ const Signin = () => {
             });
             const session = await fetchAuthSession();
             if (result.isSignedIn && session.tokens.idToken.payload.email_verified) {
+                await dispatch(fetchToken());
                 navigate('/');
                 setVerificated(true);
             }
@@ -88,7 +92,8 @@ const Signin = () => {
                                     variant="contained"
                                     style={{ borderRadius: '0.7rem' }}
                                     sx={{ mt: 2, mb: 2, p: 1.5 }} type="submit">Login</Button>
-                                <Link href="/signup" underline="none">Don't you have an accout?</Link>
+
+                                <Link component="button" underline="none" onClick={() => { navigate('/signup') }}>Don't you have an accout?</Link>
                             </Form>
                         )}
                     </Formik>

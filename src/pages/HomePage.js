@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchToken } from '../redux/userSlice.js';
 import api from '../api.js';
 
-import { Grid, Typography, IconButton } from '@mui/material';
+import { Grid, Typography, IconButton, Link } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 import AvatarHeader from '../components/Layout/AvatarHeader/index.jsx';
@@ -11,8 +11,10 @@ import NavBar from '../components/Layout/NavBar';
 import StatsCard from '../components/Layout/StatsCard/index.jsx';
 import CategoryBoard from '../components/Category/CategoryBoard';
 import './assets/style.css'
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { userId } = useSelector(store => store.user);
     const [categories, setCategories] = useState([]);
@@ -65,14 +67,14 @@ const Home = () => {
             </Grid>
             <Grid container justifyContent="center" spacing={2} mt={4}>
                 <Grid item xs={12} sm={6} md={6}>
-                    <a href='/links/all' className='statsCard'>
+                    <Link component='button' underline="none" onClick={() => { navigate('/all/links') }} className='statsCard'>
                         <StatsCard iconType="link" title="All Links" count={countAllLinks} className="statsCard" />
-                    </a>
+                    </Link>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
-                    <a href='/links/favorites' style={{ textDecoration: 'none' }} >
-                        <StatsCard iconType="favorite" title="Favorite Links" count={countFavorites} />
-                    </a>
+                    <Link component='button' underline="none" onClick={() => { navigate('/all/links/favorites') }} className='statsCard' >
+                        <StatsCard iconType="favorite" title="Favorite Links" count={countFavorites} className="statsCard" />
+                    </Link>
                 </Grid>
             </Grid>
             <Typography variant="h4" mt={4} mb={2}>
