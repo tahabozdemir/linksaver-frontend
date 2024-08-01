@@ -9,6 +9,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CreateIcon from '@mui/icons-material/Create';
 import CloseIcon from '@mui/icons-material/Close';
 
+
 const CategoryCard = ({ iconType, title, count, onDelete, onEdit, onNavigateLinks }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
@@ -19,7 +20,7 @@ const CategoryCard = ({ iconType, title, count, onDelete, onEdit, onNavigateLink
   };
 
   const handleSave = () => {
-    if (newTitle.length >= 2 && newTitle.length <= 12) {
+    if (newTitle.length >= 2 && newTitle.length <= 35) {
       onEdit(newTitle);
       setIsEditing(false);
     }
@@ -32,7 +33,11 @@ const CategoryCard = ({ iconType, title, count, onDelete, onEdit, onNavigateLink
 
   return (
     <>
-      <Card>
+      <Card onClick={onNavigateLinks} sx={{
+        cursor: 'pointer', '&:hover': {
+          boxShadow: 3,
+        },
+      }} >
         <CardContent style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {iconType === 'home' && <HomeIcon />}
           {iconType === 'edit' && <EditIcon />}
@@ -47,12 +52,12 @@ const CategoryCard = ({ iconType, title, count, onDelete, onEdit, onNavigateLink
                       handleSave();
                     }
                   }}
-                  inputProps={{ maxLength: 30 }}
+                  inputProps={{ maxLength: 35 }}
                   autoFocus
                   style={{ marginRight: '10px' }}
                 />
-                <IconButton onClick={handleSave}><CheckIcon /></IconButton>
-                <IconButton onClick={handleCancel}><CloseIcon /></IconButton>
+                <IconButton onClick={(e) => { e.stopPropagation(); handleSave(); }}><CheckIcon /></IconButton>
+                <IconButton onClick={(e) => { e.stopPropagation(); handleCancel(); }}><CloseIcon /></IconButton>
               </div>
             ) : (
               <Typography
@@ -64,10 +69,10 @@ const CategoryCard = ({ iconType, title, count, onDelete, onEdit, onNavigateLink
             )}
             <Typography variant="h6">{count}</Typography>
           </Container>
-          {!isEditing && <IconButton onClick={handleEditClick}><CreateIcon /></IconButton>}
-          <IconButton onClick={onNavigateLinks}><PlayArrowIcon /></IconButton>
-          <IconButton><ShareIcon /></IconButton>
-          <IconButton onClick={onDelete}><DeleteIcon /></IconButton>
+          {!isEditing && <IconButton onClick={(e) => { e.stopPropagation(); handleEditClick(); }}><CreateIcon /></IconButton>}
+          <IconButton onClick={(e) => { e.stopPropagation(); onNavigateLinks(); }}><PlayArrowIcon /></IconButton>
+          <IconButton onClick={(e) => { e.stopPropagation(); }}><ShareIcon /></IconButton>
+          <IconButton onClick={(e) => { e.stopPropagation(); onDelete(); }}><DeleteIcon /></IconButton>
         </CardContent>
       </Card>
     </>

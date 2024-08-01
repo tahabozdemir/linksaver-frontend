@@ -1,17 +1,17 @@
 import React, { useState, useRef } from 'react';
-import { Card, CardContent, Typography, Container, IconButton, TextField, Box, Link } from '@mui/material';
+import { Card, CardContent, Typography, Box, IconButton, TextField, Link } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { grey, red } from '@mui/material/colors';
+import { grey, red, blue } from '@mui/material/colors';
 
 const LinkCard = ({ title, url, isFavorite, onDelete, onEdit, onFavorite }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newTitle, setNewTitle] = useState(title);
-    const [newUrl, setNewUrl] = useState(url)
+    const [newUrl, setNewUrl] = useState(url);
     const [newFavorite, setFavorited] = useState(isFavorite);
     const inputRef = useRef(null);
 
@@ -36,65 +36,89 @@ const LinkCard = ({ title, url, isFavorite, onDelete, onEdit, onFavorite }) => {
         const updatedFavorite = !newFavorite;
         setFavorited(updatedFavorite);
         onFavorite(updatedFavorite);
-    }
+    };
 
     return (
-        <>
-            <Card>
-                <CardContent style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {isEditing ? (
-                            <div ref={inputRef} style={{ display: 'flex', alignItems: 'center' }}>
-                                <TextField
-                                    value={newTitle}
-                                    onChange={(e) => setNewTitle(e.target.value)}
-                                    onKeyUp={(e) => {
-                                        if (e.key === 'Enter') {
-                                            handleSave();
-                                        }
-                                    }}
-                                    inputProps={{ maxLength: 50 }}
-                                    autoFocus
-                                    style={{ marginRight: '10px' }}
-                                />
-                                <TextField
-                                    value={newUrl}
-                                    onChange={(e) => setNewUrl(e.target.value)}
-                                    onKeyUp={(e) => {
-                                        if (e.key === 'Enter') {
-                                            handleSave();
-                                        }
-                                    }}
-                                    inputProps={{ maxLength: 300 }}
-                                    autoFocus
-                                    style={{ marginRight: '10px' }}
-                                />
-                                <IconButton onClick={handleSave}><CheckIcon /></IconButton>
-                                <IconButton onClick={handleCancel}><CloseIcon /></IconButton>
-                            </div>
-                        ) : (
-                            <Box sx={{ width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap' }}>
-                                    <Typography color={grey[800]} variant='h6' textAlign={'left'}>
-                                        {title}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-                                    <Link href={url} variant="subtitle">
-                                        {url}
-                                    </Link>
-                                </Box>
-                            </Box>
-                        )}
-
-                    </Container>
-                    {!isEditing && <IconButton onClick={handleEditClick}><CreateIcon /></IconButton>}
-                    <IconButton onClick={handleFavorite}><FavoriteIcon sx={{ color: newFavorite ? red[500] : 'gray' }} /></IconButton>
-                    <IconButton><ShareIcon /></IconButton>
-                    <IconButton onClick={onDelete}><DeleteIcon /></IconButton>
-                </CardContent>
-            </Card>
-        </>
+        <Card sx={{ width: '100%' }}>
+            <CardContent sx={{ display: 'flex', flexDirection: 'column', padding: 3 }}>
+                {isEditing ? (
+                    <Box ref={inputRef} sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <TextField
+                            value={newTitle}
+                            onChange={(e) => setNewTitle(e.target.value)}
+                            onKeyUp={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSave();
+                                }
+                            }}
+                            inputProps={{ maxLength: 50 }}
+                            autoFocus
+                            fullWidth
+                            sx={{ marginBottom: 2 }}
+                            variant="outlined"
+                            label="Title"
+                        />
+                        <TextField
+                            value={newUrl}
+                            onChange={(e) => setNewUrl(e.target.value)}
+                            onKeyUp={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSave();
+                                }
+                            }}
+                            inputProps={{ maxLength: 300 }}
+                            fullWidth
+                            sx={{ marginBottom: 2 }}
+                            variant="outlined"
+                            label="URL"
+                        />
+                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <IconButton onClick={handleSave} color="primary"><CheckIcon /></IconButton>
+                            <IconButton onClick={handleCancel} color="error"><CloseIcon /></IconButton>
+                        </Box>
+                    </Box>
+                ) : (
+                    <Box sx={{ width: '100%', textAlign: 'center' }}>
+                        <Typography
+                            color={grey[800]}
+                            variant='h6'
+                            sx={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                marginBottom: 1,
+                            }}
+                        >
+                            {title}
+                        </Typography>
+                        <Link
+                            href={url}
+                            variant="body2"
+                            sx={{
+                                display: 'block',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                textDecoration: 'none',
+                                marginBottom: 2,
+                            }}
+                        >
+                            {url}
+                        </Link>
+                    </Box>
+                )}
+                {!isEditing && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                        <IconButton onClick={handleEditClick}><CreateIcon /></IconButton>
+                        <IconButton onClick={handleFavorite}>
+                            <FavoriteIcon sx={{ color: newFavorite ? red[500] : grey }} />
+                        </IconButton>
+                        <IconButton><ShareIcon /></IconButton>
+                        <IconButton onClick={onDelete}><DeleteIcon /></IconButton>
+                    </Box>
+                )}
+            </CardContent>
+        </Card>
     );
 };
 

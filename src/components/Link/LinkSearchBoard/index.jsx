@@ -100,37 +100,47 @@ const LinkSearchBoard = ({ showFavoritesCard, title, Icon }) => {
     }, [searchTerm, showFavoritesCard, links]);
 
     const Card = () => {
+        if (filteredLinks.length === 0) {
+            return (
+                <Typography variant="h6" color="textSecondary">
+                    There is no result that you searched for.
+                </Typography>
+            );
+        }
         if (showFavoritesCard) {
-            return (<Grid container spacing={2}>
-                {filteredLinks.map((link, index) => (
-                    <Grid item xs={12} key={index}>
-                        <LinkFavoriteCard
-                            title={link.title}
-                            url={link.url}
-                            isFavorite={link.isFavorite}
-                            onFavorite={(isFavorite) => handleFavorite(link.id, isFavorite)}
-                        />
-                    </Grid>
-                ))}
-            </Grid>)
+            return (
+                <Grid container spacing={2}>
+                    {filteredLinks.map((link, index) => (
+                        <Grid item xs={12} key={index}>
+                            <LinkFavoriteCard
+                                title={link.title}
+                                url={link.url}
+                                isFavorite={link.isFavorite}
+                                onFavorite={(isFavorite) => handleFavorite(link.id, isFavorite)}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
+            );
+        } else {
+            return (
+                <Grid container spacing={2}>
+                    {filteredLinks.map((link, index) => (
+                        <Grid item xs={12} key={index}>
+                            <LinkCard
+                                title={link.title}
+                                url={link.url}
+                                isFavorite={link.isFavorite}
+                                onDelete={() => handleDeleteLink(link.id)}
+                                onEdit={(newTitle, newUrl) => handleEditLink(link.id, newTitle, newUrl)}
+                                onFavorite={(isFavorite) => handleFavorite(link.id, isFavorite)}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
+            );
         }
-        else {
-            return (<Grid container spacing={2}>
-                {filteredLinks.map((link, index) => (
-                    <Grid item xs={12} key={index}>
-                        <LinkCard
-                            title={link.title}
-                            url={link.url}
-                            isFavorite={link.isFavorite}
-                            onDelete={() => handleDeleteLink(link.id)}
-                            onEdit={(newTitle, newUrl) => handleEditLink(link.id, newTitle, newUrl)}
-                            onFavorite={(isFavorite) => handleFavorite(link.id, isFavorite)}
-                        />
-                    </Grid>
-                ))}
-            </Grid>)
-        }
-    }
+    };
     return (
         <div>
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '3rem', marginBottom: '1rem' }}>
