@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchToken } from './redux/userSlice';
 import './config/amplify-config';
+import ForgotPassword from './pages/ForgotPassword';
 
 const Signup = lazy(() => import('./components/Auth/SignupForm'));
 const Signin = lazy(() => import('./components/Auth/SigninForm'));
@@ -59,6 +60,7 @@ function App() {
                 <Route path='/signup' element={<Signup />} />
                 <Route path='/signin' element={<Signin />} />
                 <Route path='/' element={<NotAuthenticatedPage />} />
+                <Route path='/forgot-password' element={<ForgotPassword />} />
                 <Route path='*' element={<NotFoundPage />} />
               </>
             )}

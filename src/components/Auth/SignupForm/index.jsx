@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Button, Link, TextField, Container, Card, Grid } from '@mui/material';
+import { Box, Button, Link, TextField, Container, Card, Grid, Snackbar, Alert } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { signUp } from "aws-amplify/auth";
+import { signUp } from 'aws-amplify/auth';
 import SignupVerification from '../SignupVerification';
 import { useNavigate } from 'react-router-dom';
 import '../../../config/amplify-config';
@@ -118,6 +118,15 @@ const SignupForm = ({ onSubmit }) => {
 
 const Signup = () => {
     const [step, setStep] = useState('');
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+    const { t } = useTranslation();
+
+    const handleCloseSnackbar = () => {
+        setSnackbarOpen(false);
+    };
+
     const handleSignup = async (values) => {
         try {
             const { nextStep } = await signUp({
@@ -126,7 +135,17 @@ const Signup = () => {
             });
             setStep(nextStep.signUpStep);
         } catch (error) {
-            alert(`Error: ${error}`);
+            let message = '';
+            if (error.code === 'UsernameExistsException') {
+                message = t('auth_signup_error_user_exists');
+            } else if (error.code === 'InvalidParameterException') {
+                message = t('auth_signup_error_invalid_parameter');
+            } else {
+                message = t('auth_signup_error_generic');
+            }
+            setSnackbarMessage(message);
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
         }
     };
 
@@ -134,6 +153,16 @@ const Signup = () => {
         <div>
             {step !== 'CONFIRM_SIGN_UP' && step !== 'DONE' && <SignupForm onSubmit={handleSignup} />}
             {step === 'CONFIRM_SIGN_UP' && <SignupVerification />}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                onClose={handleCloseSnackbar}
+            >
+                <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </div>
     );
 };
