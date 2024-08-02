@@ -5,37 +5,40 @@ import * as Yup from 'yup';
 import { signUp } from "aws-amplify/auth";
 import SignupVerification from '../SignupVerification';
 import { useNavigate } from 'react-router-dom';
-import '../../../config/amplify-config'
+import '../../../config/amplify-config';
+import { useTranslation } from "react-i18next";
 
 const SignupForm = ({ onSubmit }) => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
     const validatePassword = (value) => {
         let error;
         if (value && !/[A-Z]/.test(value)) {
-            error = 'Password must contain at least one uppercase letter!';
+            error = t('auth_signup_password_uppercase');
         } else if (value && !/[a-z]/.test(value)) {
-            error = 'Password must contain at least one lowercase letter!';
+            error = t('auth_signup_password_lowercase');
         } else if (value && !/[0-9]/.test(value)) {
-            error = 'Password must contain at least one number!';
+            error = t('auth_signup_password_number');
         } else if (value && !/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-            error = 'Password must contain at least one symbol!';
+            error = t('auth_signup_password_symbol');
         }
         return error;
     };
 
     const validationSchema = Yup.object({
         email: Yup.string()
-            .email("Email is invalid!")
+            .email(t('auth_signin_email_invalid'))
             .max(64)
-            .required("Required an Email!"),
+            .required(t('auth_signin_email_required')),
         password: Yup.string()
-            .min(8, "Password must be 8 characters at least!")
+            .min(8, t('auth_signup_password_min'))
             .max(64)
-            .required("Required a Password!"),
+            .required(t('auth_signin_password_required')),
         confirmPassword: Yup.string()
-            .oneOf([Yup.ref('password'), null], "Passwords must match!")
+            .oneOf([Yup.ref('password'), null], t('auth_signup_password_match'))
             .max(64)
-            .required("Required to confirm password!"),
+            .required(t('auth_signup_confirm_password_required')),
     });
 
     return (
@@ -58,12 +61,12 @@ const SignupForm = ({ onSubmit }) => {
                         }}>
                         {({ errors, touched }) => (
                             <Form>
-                                <h1 style={{ margin: 0, padding: 0, marginBottom: '2rem' }}>Sign up</h1>
+                                <h1 style={{ margin: 0, padding: 0, marginBottom: '2rem' }}>{t('auth_signup_title')}</h1>
                                 <Box mb={1}>
                                     <Field
                                         name="email"
                                         as={TextField}
-                                        label="Email"
+                                        label={t('auth_form_email')}
                                         fullWidth
                                         error={touched.email && Boolean(errors.email)}
                                         helperText={touched.email && errors.email}
@@ -74,7 +77,7 @@ const SignupForm = ({ onSubmit }) => {
                                         name="password"
                                         as={TextField}
                                         type="password"
-                                        label="Password"
+                                        label={t('auth_form_password')}
                                         fullWidth
                                         validate={validatePassword}
                                         error={touched.password && Boolean(errors.password)}
@@ -86,7 +89,7 @@ const SignupForm = ({ onSubmit }) => {
                                         name="confirmPassword"
                                         as={TextField}
                                         type="password"
-                                        label="Confirm Password"
+                                        label={t('auth_form_confirm_password')}
                                         fullWidth
                                         error={touched.confirmPassword && Boolean(errors.confirmPassword)}
                                         helperText={touched.confirmPassword && errors.confirmPassword}
@@ -96,9 +99,14 @@ const SignupForm = ({ onSubmit }) => {
                                     fullWidth
                                     variant="contained"
                                     style={{ borderRadius: '0.7rem' }}
-                                    sx={{ mt: 2, mb: 2, p: 1.5 }} type="submit">Create Account</Button>
-
-                                <Link component='button' underline="none" onClick={() => { navigate('/signin') }}>Already have an account?</Link>
+                                    sx={{ mt: 2, mb: 2, p: 1.5 }}
+                                    type="submit"
+                                >
+                                    {t('auth_signup_button')}
+                                </Button>
+                                <Link component='button' underline="none" onClick={() => { navigate('/signin') }}>
+                                    {t('auth_signup_navigation')}
+                                </Link>
                             </Form>
                         )}
                     </Formik>

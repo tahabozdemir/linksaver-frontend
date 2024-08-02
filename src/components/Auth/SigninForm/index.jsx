@@ -7,19 +7,19 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { fetchToken } from '../../../redux/userSlice'
 import SignupVerification from '../SignupVerification';
-
-
-const validationSchema = Yup.object({
-    email: Yup.string()
-        .email("Email is invalid!")
-        .max(64)
-        .required("Required an Email!"),
-    password: Yup.string()
-        .max(64)
-        .required("Required a Password!")
-});
+import { useTranslation } from "react-i18next";
 
 const Signin = () => {
+    const { t } = useTranslation();
+    const validationSchema = Yup.object().shape({
+        email: Yup.string()
+            .email(t('auth_signin_email_required'))
+            .max(64)
+            .required(t('auth_signin_email_required')),
+        password: Yup.string()
+            .max(64)
+            .required(t('auth_signin_password_required'))
+    });
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [isVerificated, setVerificated] = useState(true);
@@ -65,12 +65,12 @@ const Signin = () => {
                         }}>
                         {({ errors, touched }) => (
                             <Form>
-                                <h1 style={{ margin: 0, padding: 0, marginBottom: '2rem' }}>Sign in</h1>
+                                <h1 style={{ margin: 0, padding: 0, marginBottom: '2rem' }}>{t('auth_signin_title')}</h1>
                                 <Box mb={1}>
                                     <Field
                                         name="email"
                                         as={TextField}
-                                        label="Email"
+                                        label={t('auth_form_email')}
                                         fullWidth
                                         error={touched.email && Boolean(errors.email)}
                                         helperText={touched.email && errors.email}
@@ -81,7 +81,7 @@ const Signin = () => {
                                         name="password"
                                         as={TextField}
                                         type="password"
-                                        label="Password"
+                                        label={t('auth_form_password')}
                                         fullWidth
                                         error={touched.password && Boolean(errors.password)}
                                         helperText={touched.password && errors.password}
@@ -91,9 +91,9 @@ const Signin = () => {
                                     fullWidth
                                     variant="contained"
                                     style={{ borderRadius: '0.7rem' }}
-                                    sx={{ mt: 2, mb: 2, p: 1.5 }} type="submit">Login</Button>
+                                    sx={{ mt: 2, mb: 2, p: 1.5 }} type="submit">{t('auth_signin_button')}</Button>
 
-                                <Link component="button" underline="none" onClick={() => { navigate('/signup') }}>Don't you have an accout?</Link>
+                                <Link component="button" underline="none" onClick={() => { navigate('/signup') }}>{t('auth_signin_navigation')}</Link>
                             </Form>
                         )}
                     </Formik>
