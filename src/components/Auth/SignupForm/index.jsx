@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Box, Button, Link, TextField, Container, Card, Grid, Snackbar, Alert } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { signUp } from 'aws-amplify/auth';
+import { signUp, AuthError } from 'aws-amplify/auth';
 import SignupVerification from '../SignupVerification';
 import { useNavigate } from 'react-router-dom';
 import '../../../config/amplify-config';
 import { useTranslation } from "react-i18next";
+import { SignupError } from './errorTypes.ts';
 
 const SignupForm = ({ onSubmit }) => {
     const navigate = useNavigate();
@@ -70,6 +71,7 @@ const SignupForm = ({ onSubmit }) => {
                                         fullWidth
                                         error={touched.email && Boolean(errors.email)}
                                         helperText={touched.email && errors.email}
+                                        inputProps={{ maxLength: 128 }}
                                     />
                                 </Box>
                                 <Box mb={1}>
@@ -82,6 +84,7 @@ const SignupForm = ({ onSubmit }) => {
                                         validate={validatePassword}
                                         error={touched.password && Boolean(errors.password)}
                                         helperText={touched.password && errors.password}
+                                        inputProps={{ maxLength: 128 }}
                                     />
                                 </Box>
                                 <Box mb={1}>
@@ -93,16 +96,15 @@ const SignupForm = ({ onSubmit }) => {
                                         fullWidth
                                         error={touched.confirmPassword && Boolean(errors.confirmPassword)}
                                         helperText={touched.confirmPassword && errors.confirmPassword}
+                                        inputProps={{ maxLength: 128 }}
                                     />
                                 </Box>
                                 <Button
                                     fullWidth
                                     variant="contained"
                                     style={{ borderRadius: '0.7rem' }}
-                                    sx={{ mt: 2, mb: 2, p: 1.5 }}
-                                    type="submit"
-                                >
-                                    {t('auth_signup_button')}
+                                    sx={{ mt: 2, mb: 2, p: 1.5 }} type="submit" disabled={loading}>
+                                    {loading ? <CircularProgress size={24} /> : t('auth_signup_button')}
                                 </Button>
                                 <Link component='button' underline="none" onClick={() => { navigate('/signin') }}>
                                     {t('auth_signup_navigation')}
@@ -117,6 +119,7 @@ const SignupForm = ({ onSubmit }) => {
 };
 
 const Signup = () => {
+    const [loading, setLoading] = useState(false);
     const [step, setStep] = useState('');
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -128,6 +131,7 @@ const Signup = () => {
     };
 
     const handleSignup = async (values) => {
+        setLoading(true);
         try {
             const { nextStep } = await signUp({
                 username: values.email,
@@ -136,16 +140,24 @@ const Signup = () => {
             setStep(nextStep.signUpStep);
         } catch (error) {
             let message = '';
-            if (error.code === 'UsernameExistsException') {
-                message = t('auth_signup_error_user_exists');
-            } else if (error.code === 'InvalidParameterException') {
-                message = t('auth_signup_error_invalid_parameter');
-            } else {
-                message = t('auth_signup_error_generic');
+            switch (error.name) {
+                case SignupError.USERNAME_EXISTS:
+                    message = t('auth_signup_error_user_exists');
+                    break;
+                case SignupError.INVALID_PARAMETER:
+                    message = t('auth_error_invalid_parameter');
+                    break;
+                default:
+                    message = t('auth_signup_error_generic');
+                    break;
             }
+
             setSnackbarMessage(message);
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
+        }
+        finally {
+            setLoading(false);
         }
     };
 

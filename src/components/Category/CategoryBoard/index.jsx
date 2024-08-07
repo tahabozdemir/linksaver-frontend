@@ -7,8 +7,10 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { useTranslation } from "react-i18next";
 
 const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategories }) => {
+    const { t } = useTranslation();
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const { userId } = useSelector(store => store.user);
@@ -35,7 +37,7 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
             })
             .then(() => {
                 fetchCategories();
-                handleSnackbarOpen('Category added successfully!');
+                handleSnackbarOpen(t('category_toast_message_add'));
             })
             .finally(() => {
                 handleCloseModal();
@@ -46,7 +48,7 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
         api.delete(`/categories/${id}?userId=${userId}`)
             .then(() => {
                 fetchCategories();
-                handleSnackbarOpen('Category deleted successfully!');
+                handleSnackbarOpen(t('category_toast_message_delete'));
             });
     };
 
@@ -57,7 +59,7 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
         })
             .then(() => {
                 fetchCategories();
-                handleSnackbarOpen('Category updated successfully!');
+                handleSnackbarOpen(t('category_toast_message_update'));
             });
     };
 
@@ -75,7 +77,6 @@ const CategoryBoard = ({ modalOpen, handleCloseModal, categories, fetchCategorie
                 <Alert
                     onClose={handleSnackbarClose}
                     severity="success"
-                    variant="filled"
                     sx={{ width: '100%' }}
                 >
                     {snackbarMessage}

@@ -36,6 +36,7 @@ const LinkForm = ({ onSubmit, onClose }) => {
                             fullWidth
                             error={touched.linkTitle && Boolean(errors.linkTitle)}
                             helperText={touched.linkTitle && errors.linkTitle}
+                            inputProps={{ maxLength: 30 }}
                         />
                     </Box>
                     <Box mb={1}>
@@ -46,6 +47,7 @@ const LinkForm = ({ onSubmit, onClose }) => {
                             fullWidth
                             error={touched.linkUrl && Boolean(errors.linkUrl)}
                             helperText={touched.linkUrl && errors.linkUrl}
+                            inputProps={{ maxLength: 300 }}
                         />
                     </Box>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-end", marginTop: '1rem' }}>

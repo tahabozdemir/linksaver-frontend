@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, Typography, Box, IconButton, TextField, Link } from '@mui/material';
-import ShareIcon from '@mui/icons-material/Share';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -123,7 +122,6 @@ const LinkCard = ({ title, url, isFavorite, onDelete, onEdit, onFavorite }) => {
                         <IconButton onClick={(e) => { e.stopPropagation(); handleFavorite(); }}>
                             <FavoriteIcon sx={{ color: newFavorite ? red[500] : grey }} />
                         </IconButton>
-                        <IconButton><ShareIcon /></IconButton>
                         <IconButton onClick={(e) => { e.stopPropagation(); onDelete(); }}><DeleteIcon /></IconButton>
                     </Box>
                 )}

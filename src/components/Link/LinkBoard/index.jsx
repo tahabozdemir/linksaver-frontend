@@ -38,7 +38,7 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
             .then(() => {
                 console.log(categoryId)
                 fetchLinks();
-                handleSnackbarOpen('Link added successfully!');
+                handleSnackbarOpen(t('link_toast_message_add'));
             })
             .finally(() => {
                 handleCloseModal();
@@ -48,7 +48,7 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
         api.delete(`/links/${id}?userId=${userId}`)
             .then(() => {
                 fetchLinks();
-                handleSnackbarOpen('Link deleted successfully!');
+                handleSnackbarOpen(t('link_toast_message_delete'));
             })
     };
 
@@ -60,7 +60,7 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
         })
             .then(() => {
                 fetchLinks();
-                handleSnackbarOpen('Link edited successfully!');
+                handleSnackbarOpen(t('link_toast_message_update'));
             })
     };
 
@@ -71,7 +71,7 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
         })
             .then(() => {
                 if (isFavorite) {
-                    handleSnackbarOpen('Link favorited successfully!');
+                    handleSnackbarOpen(t('link_toast_message_favorite'));
                 }
             })
     }
@@ -86,7 +86,6 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
                 <Alert
                     onClose={handleSnackbarClose}
                     severity="success"
-                    variant="filled"
                     sx={{ width: '100%' }}
                 >
                     {snackbarMessage}

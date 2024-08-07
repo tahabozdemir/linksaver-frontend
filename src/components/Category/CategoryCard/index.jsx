@@ -3,7 +3,6 @@ import { Card, CardContent, Typography, Container, Box, IconButton, TextField } 
 import HomeIcon from '@mui/icons-material/Home';
 import EditIcon from '@mui/icons-material/Edit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import ShareIcon from '@mui/icons-material/Share';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import CreateIcon from '@mui/icons-material/Create';
@@ -115,7 +114,6 @@ const CategoryCard = ({ iconType, title, count, onDelete, onEdit, onNavigateLink
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
             <IconButton onClick={(e) => { handleStopPropagation(e); handleEditClick(); }}><CreateIcon /></IconButton>
             <IconButton onClick={(e) => { handleStopPropagation(e); onNavigateLinks(); }}><PlayArrowIcon /></IconButton>
-            <IconButton onClick={handleStopPropagation}><ShareIcon /></IconButton>
             <IconButton onClick={(e) => { handleStopPropagation(e); onDelete(); }}><DeleteIcon /></IconButton>
           </Box>
         )}

@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { resetPassword, confirmResetPassword } from 'aws-amplify/auth';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
+import { ForgotPasswordError } from './errorTypes.ts';
 
 const ForgotPassword = () => {
     const { t } = useTranslation();
@@ -56,7 +57,25 @@ const ForgotPassword = () => {
             setSnackbarOpen(true);
             navigate('/signin');
         } catch (error) {
-            setSnackbarMessage(t('auth_forgot_password_error'));
+            let message = '';
+            switch (error.name) {
+                case ForgotPasswordError.EXPIRED_CODE:
+                    message = t('auth_forgot_password_error_code_expired');
+                    break;
+                case ForgotPasswordError.MISMATCH_CODE:
+                    message = t('auth_forgot_password_error_code_mismatch');
+                    break;
+                case ForgotPasswordError.LIMIT_EXCEED:
+                    message = t('auth_forgot_password_error_code_exceed');
+                    break;
+                case ForgotPasswordError.INVALID_PARAMETER:
+                    message = t('auth_error_invalid_parameter');
+                    break;
+                default:
+                    message = t('auth_forgot_password_error_generic');
+                    break;
+            }
+            setSnackbarMessage(message);
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
         } finally {
@@ -99,6 +118,7 @@ const ForgotPassword = () => {
                                             fullWidth
                                             error={touched.email && Boolean(errors.email)}
                                             helperText={touched.email && errors.email}
+                                            inputProps={{ maxLength: 128 }}
                                         />
                                     </Box>
                                     <Button
@@ -134,6 +154,7 @@ const ForgotPassword = () => {
                                             fullWidth
                                             error={touched.code && Boolean(errors.code)}
                                             helperText={touched.code && errors.code}
+                                            inputProps={{ maxLength: 128 }}
                                         />
                                     </Box>
                                     <Box mb={1}>
@@ -145,6 +166,7 @@ const ForgotPassword = () => {
                                             fullWidth
                                             error={touched.password && Boolean(errors.password)}
                                             helperText={touched.password && errors.password}
+                                            inputProps={{ maxLength: 128 }}
                                         />
                                     </Box>
                                     <Button

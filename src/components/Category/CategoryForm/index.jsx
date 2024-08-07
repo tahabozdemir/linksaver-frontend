@@ -4,13 +4,11 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from "react-i18next";
 
-
-
 const validationSchema = Yup.object({
   category: Yup.string().
     required('Required a Category Title')
     .min(2, 'Category Title must be at least 2 characters')
-    .max(15, 'Category Title must be at most 15 characters'),
+    .max(15, 'Category Title must be at most 30 characters'),
 });
 
 const CategoryForm = ({ onSubmit, onClose }) => {
@@ -35,11 +33,12 @@ const CategoryForm = ({ onSubmit, onClose }) => {
               fullWidth
               error={touched.category && Boolean(errors.category)}
               helperText={touched.category && errors.category}
+              inputProps={{ maxLength: 30 }}
             />
           </Box>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-end", marginTop: '1rem' }}>
-            <Button type="submit">{t('button_add_title')}</Button>
             <Button onClick={onClose} color='error'>{t('button_cancel_title')}</Button>
+            <Button type="submit">{t('button_add_title')}</Button>
           </div>
         </Form>
       )}

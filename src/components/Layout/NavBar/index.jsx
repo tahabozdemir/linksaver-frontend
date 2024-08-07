@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import './assets/style.css';
+import ConfirmationDialog from '../ConfirmationDialog';
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const NavBar = () => {
   const { t, i18n } = useTranslation();
   const [lang, setLang] = useState(i18n.language);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -49,12 +51,15 @@ const NavBar = () => {
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
 
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
+
   const renderDesktopMenu = () => (
     <Box>
       <Button startIcon={<HomeIcon />} onClick={handleNavigateHomePage} sx={{ color: 'black' }}>
         {t('nav_home')}
       </Button>
-      <Button startIcon={<ExitToAppIcon />} onClick={handleSignout} sx={{ color: 'black' }}>
+      <Button startIcon={<ExitToAppIcon />} onClick={handleOpenDialog} sx={{ color: 'black' }}>
         {t('nav_signout')}
       </Button>
       <Button onClick={toggleLanguage} sx={{ color: 'black' }}>
@@ -73,7 +78,7 @@ const NavBar = () => {
           <ListItemIcon><HomeIcon /></ListItemIcon>
           {t('nav_home')}
         </MenuItem>
-        <MenuItem onClick={handleSignout}>
+        <MenuItem onClick={handleOpenDialog}>
           <ListItemIcon><ExitToAppIcon /></ListItemIcon>
           {t('nav_signout')}
         </MenuItem>
@@ -98,6 +103,15 @@ const NavBar = () => {
           {isSmallScreen ? renderMobileMenu() : renderDesktopMenu()}
         </Grid>
       </Grid>
+      <ConfirmationDialog
+        open={openDialog}
+        title={t('confirm_signout_title')}
+        body={t('confirm_signout_message')}
+        confirmButtonText={t('confirm_signout_confirm_button')}
+        closeButtonText={t('button_cancel_title')}
+        onClose={handleCloseDialog}
+        onConfirm={() => { handleCloseDialog(); handleSignout(); }}
+      />
     </Box>
   );
 };
