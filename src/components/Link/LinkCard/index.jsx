@@ -6,7 +6,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { grey, red, blue } from '@mui/material/colors';
+import { grey, red } from '@mui/material/colors';
 
 const LinkCard = ({ title, url, isFavorite, onDelete, onEdit, onFavorite }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -26,6 +26,10 @@ const LinkCard = ({ title, url, isFavorite, onDelete, onEdit, onFavorite }) => {
         }
     };
 
+    const handleOpenLink = () => {
+        window.open(url, '_blank');
+    }
+
     const handleCancel = () => {
         setNewTitle(title);
         setNewUrl(url);
@@ -39,7 +43,14 @@ const LinkCard = ({ title, url, isFavorite, onDelete, onEdit, onFavorite }) => {
     };
 
     return (
-        <Card sx={{ width: '100%' }}>
+        <Card onClick={handleOpenLink} sx={{
+            width: '100%',
+            borderRadius: 2,
+            cursor: 'pointer',
+            '&:hover': {
+                boxShadow: 3,
+            }
+        }}>
             <CardContent sx={{ display: 'flex', flexDirection: 'column', padding: 3 }}>
                 {isEditing ? (
                     <Box ref={inputRef} sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -73,8 +84,8 @@ const LinkCard = ({ title, url, isFavorite, onDelete, onEdit, onFavorite }) => {
                             label="URL"
                         />
                         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                            <IconButton onClick={handleSave} color="primary"><CheckIcon /></IconButton>
-                            <IconButton onClick={handleCancel} color="error"><CloseIcon /></IconButton>
+                            <IconButton onClick={(e) => { e.stopPropagation(); handleSave(); }} color="primary"><CheckIcon /></IconButton>
+                            <IconButton onClick={(e) => { e.stopPropagation(); handleCancel(); }} color="error"><CloseIcon /></IconButton>
                         </Box>
                     </Box>
                 ) : (
@@ -92,7 +103,6 @@ const LinkCard = ({ title, url, isFavorite, onDelete, onEdit, onFavorite }) => {
                             {title}
                         </Typography>
                         <Link
-                            href={url}
                             variant="body2"
                             sx={{
                                 display: 'block',
@@ -109,12 +119,12 @@ const LinkCard = ({ title, url, isFavorite, onDelete, onEdit, onFavorite }) => {
                 )}
                 {!isEditing && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-                        <IconButton onClick={handleEditClick}><CreateIcon /></IconButton>
-                        <IconButton onClick={handleFavorite}>
+                        <IconButton onClick={(e) => { e.stopPropagation(); handleEditClick(); }}><CreateIcon /></IconButton>
+                        <IconButton onClick={(e) => { e.stopPropagation(); handleFavorite(); }}>
                             <FavoriteIcon sx={{ color: newFavorite ? red[500] : grey }} />
                         </IconButton>
                         <IconButton><ShareIcon /></IconButton>
-                        <IconButton onClick={onDelete}><DeleteIcon /></IconButton>
+                        <IconButton onClick={(e) => { e.stopPropagation(); onDelete(); }}><DeleteIcon /></IconButton>
                     </Box>
                 )}
             </CardContent>

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchToken } from '../redux/userSlice.js';
 import api from '../api.js';
 import { Grid, Typography, IconButton } from '@mui/material';
-import AvatarHeader from '../components/Layout/AvatarHeader/index.jsx';
 import NavBar from '../components/Layout/NavBar/index.jsx';
 import AddIcon from '@mui/icons-material/Add';
 import LinkBoard from '../components/Link/LinkBoard';
@@ -57,7 +56,6 @@ const LinkPage = () => {
     return (
         <div>
             <Grid container spacing={2} alignItems="center">
-                <AvatarHeader />
                 <NavBar />
             </Grid>
             <Typography variant="h4" mt={4} mb={2}>

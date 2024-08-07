@@ -5,8 +5,10 @@ import LinkCard from '../LinkCard';
 import { fetchToken } from '../../../redux/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import LinkFavoriteCard from '../LinkFavoriteCard';
+import { useTranslation } from "react-i18next";
 
 const LinkSearchBoard = ({ showFavoritesCard, title, Icon }) => {
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const { userId } = useSelector(store => store.user);
     const [filteredLinks, setFilteredLinks] = useState([]);
@@ -103,7 +105,7 @@ const LinkSearchBoard = ({ showFavoritesCard, title, Icon }) => {
         if (filteredLinks.length === 0) {
             return (
                 <Typography variant="h6" color="textSecondary">
-                    There is no result that you searched for.
+                    {t('no_search_result')}
                 </Typography>
             );
         }
@@ -151,7 +153,7 @@ const LinkSearchBoard = ({ showFavoritesCard, title, Icon }) => {
             </div>
             <TextField
                 fullWidth
-                label="Search links by title"
+                label={t('searchbar_placehodler')}
                 variant="outlined"
                 value={searchTerm}
                 onChange={(e) => {

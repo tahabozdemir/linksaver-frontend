@@ -6,8 +6,10 @@ import { useSelector } from 'react-redux';
 import LinkModal from '../LinkModal';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { useTranslation } from "react-i18next";
 
 const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks }) => {
+    const { t } = useTranslation();
     const { userId } = useSelector(store => store.user);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');

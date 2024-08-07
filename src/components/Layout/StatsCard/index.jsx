@@ -14,6 +14,7 @@ const iconMapping = {
 
 const StatsCard = ({ iconType, title, count }) => (
   <Card sx={{
+    borderRadius: 2,
     '&:hover': {
       boxShadow: 3,
     }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Button } from '@mui/material';
+import { Grid } from '@mui/material';
 import CategoryCard from '../CategoryCard';
 import CategoryModal from '../CategoryModal';
 import api from '../../../api';

@@ -6,7 +6,6 @@ import api from '../api.js';
 import { Grid, Typography, IconButton, Link } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import AvatarHeader from '../components/Layout/AvatarHeader/index.jsx';
 import NavBar from '../components/Layout/NavBar';
 import StatsCard from '../components/Layout/StatsCard/index.jsx';
 import CategoryBoard from '../components/Category/CategoryBoard';
@@ -64,7 +63,6 @@ const Home = () => {
     return (
         <div>
             <Grid container spacing={2} alignItems="center">
-                <AvatarHeader />
                 <NavBar />
             </Grid>
             <Grid container justifyContent="center" spacing={2} mt={4}>
