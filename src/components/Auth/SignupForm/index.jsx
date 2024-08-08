@@ -11,7 +11,13 @@ import { SignupError } from './errorTypes.ts';
 
 const SignupForm = ({ onSubmit }) => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
+    const minCharPassword = 8
+    const maxCharPassword = 128
+    const minCharEmail = 6
+    const maxCharEmail = 128
+
 
     const validatePassword = (value) => {
         let error;
@@ -30,15 +36,16 @@ const SignupForm = ({ onSubmit }) => {
     const validationSchema = Yup.object({
         email: Yup.string()
             .email(t('auth_signin_email_invalid'))
-            .max(64)
+            .min(minCharEmail, t('auth_signup_email_min', { min: minCharEmail }))
+            .max(maxCharEmail, t('auth_signup_email_max', { max: maxCharEmail })) //
             .required(t('auth_signin_email_required')),
         password: Yup.string()
-            .min(8, t('auth_signup_password_min'))
-            .max(64)
+            .min(minCharPassword, t('auth_signup_password_min', { min: minCharPassword })) //
+            .max(maxCharPassword, t('auth_signup_password_max', { max: maxCharPassword })) // 
             .required(t('auth_signin_password_required')),
         confirmPassword: Yup.string()
             .oneOf([Yup.ref('password'), null], t('auth_signup_password_match'))
-            .max(64)
+            .max(maxCharPassword, t('auth_signup_password_max', { max: maxCharPassword })) //
             .required(t('auth_signup_confirm_password_required')),
     });
 
@@ -71,7 +78,7 @@ const SignupForm = ({ onSubmit }) => {
                                         fullWidth
                                         error={touched.email && Boolean(errors.email)}
                                         helperText={touched.email && errors.email}
-                                        inputProps={{ maxLength: 128 }}
+                                        inputProps={{ maxLength: maxCharEmail }}
                                     />
                                 </Box>
                                 <Box mb={1}>
@@ -84,7 +91,7 @@ const SignupForm = ({ onSubmit }) => {
                                         validate={validatePassword}
                                         error={touched.password && Boolean(errors.password)}
                                         helperText={touched.password && errors.password}
-                                        inputProps={{ maxLength: 128 }}
+                                        inputProps={{ maxLength: maxCharPassword }}
                                     />
                                 </Box>
                                 <Box mb={1}>
@@ -96,7 +103,7 @@ const SignupForm = ({ onSubmit }) => {
                                         fullWidth
                                         error={touched.confirmPassword && Boolean(errors.confirmPassword)}
                                         helperText={touched.confirmPassword && errors.confirmPassword}
-                                        inputProps={{ maxLength: 128 }}
+                                        inputProps={{ maxLength: maxCharPassword }}
                                     />
                                 </Box>
                                 <Button
