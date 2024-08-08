@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Container, Box, Link, IconButton } from '@mui/material';
+import { Card, CardContent, Typography, Container, Box, Link, IconButton, Tooltip } from '@mui/material';
 import { grey, red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
@@ -12,28 +12,45 @@ const LinkFavoriteCard = ({ onFavorite, isFavorite, title, url }) => {
         onFavorite(updatedFavorite);
     }
 
+    const handleOpenLink = () => {
+        window.open(url, '_blank');
+    }
+
     return (
-        <>
-            <Card>
-                <CardContent style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Box sx={{ width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                            <Box sx={{ flexGrow: 1, display: 'flex', flexWrap: 'wrap' }}>
-                                <Typography color={grey[800]} variant='h6' textAlign={'left'}>
-                                    {title}
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-                                <Link href={url} variant="subtitle">
-                                    {url}
-                                </Link>
-                            </Box>
-                        </Box>
-                    </Container>
-                    <IconButton onClick={handleFavorite}><FavoriteIcon sx={{ color: newFavorite ? red[500] : 'gray' }} /></IconButton>
-                </CardContent>
-            </Card>
-        </>
+        <Card
+            onClick={handleOpenLink}
+            sx={{
+                borderRadius: 2,
+                cursor: 'pointer',
+                '&:hover': { boxShadow: 3 }
+            }}
+        >
+            <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <Typography color={grey[800]} variant='h6' sx={{
+                        textOverflow: 'ellipsis',
+                        textDecoration: 'none',
+                    }}>
+                        {title}
+                    </Typography>
+                    <Link
+                        variant="body2"
+                        sx={{
+                            textOverflow: 'ellipsis',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        {url}
+                    </Link>
+                </Box>
+                <IconButton
+                    onClick={(e) => { e.stopPropagation(); handleFavorite(); }}
+                    sx={{ ml: 1 }}
+                >
+                    <FavoriteIcon sx={{ color: newFavorite ? red[500] : grey[400] }} />
+                </IconButton>
+            </CardContent>
+        </Card>
     );
 };
 

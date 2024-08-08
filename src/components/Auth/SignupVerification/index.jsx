@@ -2,10 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Box, Container, Card, Grid, Typography } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { useTranslation } from "react-i18next";
+import { useDispatch } from 'react-redux';
+
 const SignupVerification = () => {
     const [counter, setCounter] = useState(10);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const { t } = useTranslation();
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -38,13 +43,13 @@ const SignupVerification = () => {
                     <Box display="flex" flexDirection="column" alignItems="center">
                         <CheckCircleOutlineIcon sx={{ fontSize: 40, color: 'green', mb: 2 }} />
                         <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
-                            Verification Link Sent
+                            {t('auth_verification_send_title')}
                         </Typography>
                         <Typography variant="body1" sx={{ mt: 1 }}>
-                            A verification link has been sent to your email. Please check your mail.
+                            {t('auth_verification_send_body')}.
                         </Typography>
                         <Typography variant="body2" sx={{ mt: 2 }}>
-                            Redirecting to sign-in form in {counter} seconds...
+                            {t('auth_verification_send_redirecting', { counter })}
                         </Typography>
                     </Box>
                 </Card>

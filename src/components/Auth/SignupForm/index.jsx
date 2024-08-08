@@ -1,41 +1,52 @@
 import React, { useState } from 'react';
-import { Box, Button, Link, TextField, Container, Card, Grid } from '@mui/material';
+import { Box, Button, Link, TextField, Container, Card, Grid, Snackbar, Alert } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { signUp } from "aws-amplify/auth";
+import { signUp, AuthError } from 'aws-amplify/auth';
 import SignupVerification from '../SignupVerification';
 import { useNavigate } from 'react-router-dom';
-import '../../../config/amplify-config'
+import '../../../config/amplify-config';
+import { useTranslation } from "react-i18next";
+import { SignupError } from './errorTypes.ts';
 
 const SignupForm = ({ onSubmit }) => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
+    const minCharPassword = 8
+    const maxCharPassword = 128
+    const minCharEmail = 6
+    const maxCharEmail = 128
+
+
     const validatePassword = (value) => {
         let error;
         if (value && !/[A-Z]/.test(value)) {
-            error = 'Password must contain at least one uppercase letter!';
+            error = t('auth_signup_password_uppercase');
         } else if (value && !/[a-z]/.test(value)) {
-            error = 'Password must contain at least one lowercase letter!';
+            error = t('auth_signup_password_lowercase');
         } else if (value && !/[0-9]/.test(value)) {
-            error = 'Password must contain at least one number!';
+            error = t('auth_signup_password_number');
         } else if (value && !/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-            error = 'Password must contain at least one symbol!';
+            error = t('auth_signup_password_symbol');
         }
         return error;
     };
 
     const validationSchema = Yup.object({
         email: Yup.string()
-            .email("Email is invalid!")
-            .max(64)
-            .required("Required an Email!"),
+            .email(t('auth_signin_email_invalid'))
+            .min(minCharEmail, t('auth_signup_email_min', { min: minCharEmail }))
+            .max(maxCharEmail, t('auth_signup_email_max', { max: maxCharEmail })) //
+            .required(t('auth_signin_email_required')),
         password: Yup.string()
-            .min(8, "Password must be 8 characters at least!")
-            .max(64)
-            .required("Required a Password!"),
+            .min(minCharPassword, t('auth_signup_password_min', { min: minCharPassword })) //
+            .max(maxCharPassword, t('auth_signup_password_max', { max: maxCharPassword })) // 
+            .required(t('auth_signin_password_required')),
         confirmPassword: Yup.string()
-            .oneOf([Yup.ref('password'), null], "Passwords must match!")
-            .max(64)
-            .required("Required to confirm password!"),
+            .oneOf([Yup.ref('password'), null], t('auth_signup_password_match'))
+            .max(maxCharPassword, t('auth_signup_password_max', { max: maxCharPassword })) //
+            .required(t('auth_signup_confirm_password_required')),
     });
 
     return (
@@ -58,15 +69,16 @@ const SignupForm = ({ onSubmit }) => {
                         }}>
                         {({ errors, touched }) => (
                             <Form>
-                                <h1 style={{ margin: 0, padding: 0, marginBottom: '2rem' }}>Sign up</h1>
+                                <h1 style={{ margin: 0, padding: 0, marginBottom: '2rem' }}>{t('auth_signup_title')}</h1>
                                 <Box mb={1}>
                                     <Field
                                         name="email"
                                         as={TextField}
-                                        label="Email"
+                                        label={t('auth_form_email')}
                                         fullWidth
                                         error={touched.email && Boolean(errors.email)}
                                         helperText={touched.email && errors.email}
+                                        inputProps={{ maxLength: maxCharEmail }}
                                     />
                                 </Box>
                                 <Box mb={1}>
@@ -74,11 +86,12 @@ const SignupForm = ({ onSubmit }) => {
                                         name="password"
                                         as={TextField}
                                         type="password"
-                                        label="Password"
+                                        label={t('auth_form_password')}
                                         fullWidth
                                         validate={validatePassword}
                                         error={touched.password && Boolean(errors.password)}
                                         helperText={touched.password && errors.password}
+                                        inputProps={{ maxLength: maxCharPassword }}
                                     />
                                 </Box>
                                 <Box mb={1}>
@@ -86,19 +99,23 @@ const SignupForm = ({ onSubmit }) => {
                                         name="confirmPassword"
                                         as={TextField}
                                         type="password"
-                                        label="Confirm Password"
+                                        label={t('auth_form_confirm_password')}
                                         fullWidth
                                         error={touched.confirmPassword && Boolean(errors.confirmPassword)}
                                         helperText={touched.confirmPassword && errors.confirmPassword}
+                                        inputProps={{ maxLength: maxCharPassword }}
                                     />
                                 </Box>
                                 <Button
                                     fullWidth
                                     variant="contained"
                                     style={{ borderRadius: '0.7rem' }}
-                                    sx={{ mt: 2, mb: 2, p: 1.5 }} type="submit">Create Account</Button>
-
-                                <Link component='button' underline="none" onClick={() => { navigate('/signin') }}>Already have an account?</Link>
+                                    sx={{ mt: 2, mb: 2, p: 1.5 }} type="submit" disabled={loading}>
+                                    {loading ? <CircularProgress size={24} /> : t('auth_signup_button')}
+                                </Button>
+                                <Link component='button' underline="none" onClick={() => { navigate('/signin') }}>
+                                    {t('auth_signup_navigation')}
+                                </Link>
                             </Form>
                         )}
                     </Formik>
@@ -109,8 +126,19 @@ const SignupForm = ({ onSubmit }) => {
 };
 
 const Signup = () => {
+    const [loading, setLoading] = useState(false);
     const [step, setStep] = useState('');
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+    const { t } = useTranslation();
+
+    const handleCloseSnackbar = () => {
+        setSnackbarOpen(false);
+    };
+
     const handleSignup = async (values) => {
+        setLoading(true);
         try {
             const { nextStep } = await signUp({
                 username: values.email,
@@ -118,7 +146,25 @@ const Signup = () => {
             });
             setStep(nextStep.signUpStep);
         } catch (error) {
-            alert(`Error: ${error}`);
+            let message = '';
+            switch (error.name) {
+                case SignupError.USERNAME_EXISTS:
+                    message = t('auth_signup_error_user_exists');
+                    break;
+                case SignupError.INVALID_PARAMETER:
+                    message = t('auth_error_invalid_parameter');
+                    break;
+                default:
+                    message = t('auth_signup_error_generic');
+                    break;
+            }
+
+            setSnackbarMessage(message);
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
+        }
+        finally {
+            setLoading(false);
         }
     };
 
@@ -126,6 +172,16 @@ const Signup = () => {
         <div>
             {step !== 'CONFIRM_SIGN_UP' && step !== 'DONE' && <SignupForm onSubmit={handleSignup} />}
             {step === 'CONFIRM_SIGN_UP' && <SignupVerification />}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                onClose={handleCloseSnackbar}
+            >
+                <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </div>
     );
 };

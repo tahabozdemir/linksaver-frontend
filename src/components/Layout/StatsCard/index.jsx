@@ -13,9 +13,20 @@ const iconMapping = {
 };
 
 const StatsCard = ({ iconType, title, count }) => (
-  <Card>
-    <CardContent>
-      {iconMapping[iconType]}
+  <Card sx={{
+    borderRadius: 2,
+    '&:hover': {
+      boxShadow: 3,
+    }
+  }}>
+    <CardContent sx={{ marginTop: "2rem" }}>
+      <div style={{
+        position: 'absolute',
+        top: '1rem',
+        left: '1rem',
+      }}>
+        {iconMapping[iconType]}
+      </div>
       <div style={{ height: '10vh', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <Typography variant="h6">{title}</Typography>
         <Typography variant="h4">{count}</Typography>

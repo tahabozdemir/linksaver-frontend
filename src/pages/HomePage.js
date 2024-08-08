@@ -6,12 +6,12 @@ import api from '../api.js';
 import { Grid, Typography, IconButton, Link } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import AvatarHeader from '../components/Layout/AvatarHeader/index.jsx';
 import NavBar from '../components/Layout/NavBar';
 import StatsCard from '../components/Layout/StatsCard/index.jsx';
 import CategoryBoard from '../components/Category/CategoryBoard';
 import './assets/style.css'
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -21,6 +21,7 @@ const Home = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [countAllLinks, setCountAllLinks] = useState(0);
     const [countFavorites, setCountFavorites] = useState(0);
+    const { t } = useTranslation();
 
     useEffect(() => {
         dispatch(fetchToken());
@@ -62,23 +63,22 @@ const Home = () => {
     return (
         <div>
             <Grid container spacing={2} alignItems="center">
-                <AvatarHeader />
                 <NavBar />
             </Grid>
             <Grid container justifyContent="center" spacing={2} mt={4}>
                 <Grid item xs={12} sm={6} md={6}>
                     <Link component='button' underline="none" onClick={() => { navigate('/all/links') }} className='statsCard'>
-                        <StatsCard iconType="link" title="All Links" count={countAllLinks} className="statsCard" />
+                        <StatsCard iconType="link" title={t('card_all_links')} count={countAllLinks} className="statsCard" />
                     </Link>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
                     <Link component='button' underline="none" onClick={() => { navigate('/all/links/favorites') }} className='statsCard' >
-                        <StatsCard iconType="favorite" title="Favorite Links" count={countFavorites} className="statsCard" />
+                        <StatsCard iconType="favorite" title={t('card_favorite_links')} count={countFavorites} className="statsCard" />
                     </Link>
                 </Grid>
             </Grid>
             <Typography variant="h4" mt={4} mb={2}>
-                Categories <IconButton onClick={handleOpenModal}><AddIcon /></IconButton>
+                {t('home_categories_title')} <IconButton onClick={handleOpenModal}><AddIcon /></IconButton>
             </Typography>
             <CategoryBoard
                 modalOpen={modalOpen}

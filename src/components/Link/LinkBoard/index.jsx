@@ -1,12 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Grid } from '@mui/material';
 import LinkCard from '../LinkCard';
 import api from '../../../api';
 import { useSelector } from 'react-redux';
 import LinkModal from '../LinkModal';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { useTranslation } from "react-i18next";
 
 const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks }) => {
+    const { t } = useTranslation();
     const { userId } = useSelector(store => store.user);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
+    const handleSnackbarOpen = (message) => {
+        setSnackbarMessage(message);
+        setSnackbarOpen(true);
+    };
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
+    };
+
     const handleAddLink = (values) => {
         api
             .post('/links', {
@@ -19,6 +38,7 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
             .then(() => {
                 console.log(categoryId)
                 fetchLinks();
+                handleSnackbarOpen(t('link_toast_message_add'));
             })
             .finally(() => {
                 handleCloseModal();
@@ -28,6 +48,7 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
         api.delete(`/links/${id}?userId=${userId}`)
             .then(() => {
                 fetchLinks();
+                handleSnackbarOpen(t('link_toast_message_delete'));
             })
     };
 
@@ -39,6 +60,7 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
         })
             .then(() => {
                 fetchLinks();
+                handleSnackbarOpen(t('link_toast_message_update'));
             })
     };
 
@@ -47,10 +69,28 @@ const LinkBoard = ({ categoryId, modalOpen, handleCloseModal, links, fetchLinks 
             isFavorite: isFavorite,
             userId: userId
         })
+            .then(() => {
+                if (isFavorite) {
+                    handleSnackbarOpen(t('link_toast_message_favorite'));
+                }
+            })
     }
 
     return (
         <div>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity="success"
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
             <Grid container spacing={2}>
                 {links.map((link, index) => (
                     <Grid item xs={12} key={index}>

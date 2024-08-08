@@ -5,8 +5,10 @@ import LinkCard from '../LinkCard';
 import { fetchToken } from '../../../redux/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import LinkFavoriteCard from '../LinkFavoriteCard';
+import { useTranslation } from "react-i18next";
 
 const LinkSearchBoard = ({ showFavoritesCard, title, Icon }) => {
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const { userId } = useSelector(store => store.user);
     const [filteredLinks, setFilteredLinks] = useState([]);
@@ -100,37 +102,47 @@ const LinkSearchBoard = ({ showFavoritesCard, title, Icon }) => {
     }, [searchTerm, showFavoritesCard, links]);
 
     const Card = () => {
+        if (filteredLinks.length === 0) {
+            return (
+                <Typography variant="h6" color="textSecondary">
+                    {t('no_search_result')}
+                </Typography>
+            );
+        }
         if (showFavoritesCard) {
-            return (<Grid container spacing={2}>
-                {filteredLinks.map((link, index) => (
-                    <Grid item xs={12} key={index}>
-                        <LinkFavoriteCard
-                            title={link.title}
-                            url={link.url}
-                            isFavorite={link.isFavorite}
-                            onFavorite={(isFavorite) => handleFavorite(link.id, isFavorite)}
-                        />
-                    </Grid>
-                ))}
-            </Grid>)
+            return (
+                <Grid container spacing={2}>
+                    {filteredLinks.map((link, index) => (
+                        <Grid item xs={12} key={index}>
+                            <LinkFavoriteCard
+                                title={link.title}
+                                url={link.url}
+                                isFavorite={link.isFavorite}
+                                onFavorite={(isFavorite) => handleFavorite(link.id, isFavorite)}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
+            );
+        } else {
+            return (
+                <Grid container spacing={2}>
+                    {filteredLinks.map((link, index) => (
+                        <Grid item xs={12} key={index}>
+                            <LinkCard
+                                title={link.title}
+                                url={link.url}
+                                isFavorite={link.isFavorite}
+                                onDelete={() => handleDeleteLink(link.id)}
+                                onEdit={(newTitle, newUrl) => handleEditLink(link.id, newTitle, newUrl)}
+                                onFavorite={(isFavorite) => handleFavorite(link.id, isFavorite)}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
+            );
         }
-        else {
-            return (<Grid container spacing={2}>
-                {filteredLinks.map((link, index) => (
-                    <Grid item xs={12} key={index}>
-                        <LinkCard
-                            title={link.title}
-                            url={link.url}
-                            isFavorite={link.isFavorite}
-                            onDelete={() => handleDeleteLink(link.id)}
-                            onEdit={(newTitle, newUrl) => handleEditLink(link.id, newTitle, newUrl)}
-                            onFavorite={(isFavorite) => handleFavorite(link.id, isFavorite)}
-                        />
-                    </Grid>
-                ))}
-            </Grid>)
-        }
-    }
+    };
     return (
         <div>
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '3rem', marginBottom: '1rem' }}>
@@ -141,7 +153,7 @@ const LinkSearchBoard = ({ showFavoritesCard, title, Icon }) => {
             </div>
             <TextField
                 fullWidth
-                label="Search links by title"
+                label={t('searchbar_placehodler')}
                 variant="outlined"
                 value={searchTerm}
                 onChange={(e) => {
