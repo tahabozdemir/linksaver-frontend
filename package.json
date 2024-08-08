@@ -42,5 +42,8 @@
     ">0.2%",
     "not dead",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "ajv": "^7.2.4"
+  }
 }
