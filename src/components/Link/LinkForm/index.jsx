@@ -4,18 +4,22 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from "react-i18next";
 
-const validationSchema = Yup.object({
-    linkTitle: Yup.string()
-        .required('Required a Link Title')
-        .min(2, 'Link Title must be at least 2 characters')
-        .max(50, 'Link Title must be at most 30 characters'),
-    linkUrl: Yup.string()
-        .required('Required a Link')
-        .max(300, 'Link Title must be at most 300 characters')
-});
-
 const LinkForm = ({ onSubmit, onClose }) => {
     const { t } = useTranslation();
+    const minCharTitle = 2;
+    const maxCharTitle = 60;
+    const minCharURL = 2;
+    const maxCharURL = 300;
+    const validationSchema = Yup.object({
+        linkTitle: Yup.string()
+            .required(t('link_add_title_required'))
+            .min(minCharTitle, t('link_add_title_min', { min: minCharTitle }))
+            .max(maxCharTitle, t('link_add_title_max', { max: maxCharTitle })),
+        linkUrl: Yup.string()
+            .required(t('link_add_url_required'))
+            .min(minCharURL, t('link_add_url_min', { min: minCharURL }))
+            .max(maxCharURL, t('link_add_url_max', { max: maxCharURL })),
+    });
     return (
         <Formik
             initialValues={{ linkTitle: '', link: '' }}
@@ -36,7 +40,7 @@ const LinkForm = ({ onSubmit, onClose }) => {
                             fullWidth
                             error={touched.linkTitle && Boolean(errors.linkTitle)}
                             helperText={touched.linkTitle && errors.linkTitle}
-                            inputProps={{ maxLength: 30 }}
+                            inputProps={{ maxLength: maxCharTitle }}
                         />
                     </Box>
                     <Box mb={1}>
@@ -47,7 +51,7 @@ const LinkForm = ({ onSubmit, onClose }) => {
                             fullWidth
                             error={touched.linkUrl && Boolean(errors.linkUrl)}
                             helperText={touched.linkUrl && errors.linkUrl}
-                            inputProps={{ maxLength: 300 }}
+                            inputProps={{ maxLength: maxCharURL }}
                         />
                     </Box>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: "flex-end", marginTop: '1rem' }}>
